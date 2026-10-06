@@ -11,6 +11,13 @@ class SplashView extends StatefulWidget {
 
 class _SplashViewState extends State<SplashView> {
   @override
+  void initState() {
+    super.initState();
+    Future.delayed(Duration(seconds: 2))
+        .then((_) => widget.onInitializationComplete());
+  }
+
+  @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: "Filcked",
