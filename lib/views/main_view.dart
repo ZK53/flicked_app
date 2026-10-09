@@ -1,6 +1,8 @@
 import 'dart:ui';
 
+import 'package:flicked_app/models/movie.dart';
 import 'package:flicked_app/models/search_category.dart';
+import 'package:flicked_app/widgets/movie_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -21,8 +23,10 @@ class MainView extends ConsumerWidget {
 
   Widget _buildUi() {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       backgroundColor: Colors.black,
       body: Container(
+        padding: EdgeInsets.only(top: _deviceHeight * 0.05),
         height: _deviceHeight,
         width: _deviceWidth,
         child: Stack(
@@ -61,9 +65,15 @@ class MainView extends ConsumerWidget {
       width: _deviceWidth * 0.88,
       child: Column(
         mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.start, // TODO: change it to end
+        mainAxisAlignment: MainAxisAlignment.end,
         crossAxisAlignment: CrossAxisAlignment.center,
-        children: [_topBarWidget()],
+        children: [
+          _topBarWidget(),
+          Container(
+            height: _deviceHeight * 0.83,
+            child: _moviesListViewWidget(),
+          ),
+        ],
       ),
     );
   }
@@ -85,7 +95,7 @@ class MainView extends ConsumerWidget {
   }
 
   Widget _searchFieldWidget() {
-    final InputBorder _border = InputBorder.none;
+    final InputBorder border = InputBorder.none;
 
     return Container(
       width: _deviceWidth * 0.5,
@@ -95,8 +105,8 @@ class MainView extends ConsumerWidget {
         onSubmitted: (input) {},
         style: TextStyle(color: Colors.white),
         decoration: InputDecoration(
-          focusedBorder: _border,
-          border: _border,
+          focusedBorder: border,
+          border: border,
           prefixIcon: Icon(Icons.search, color: Colors.white24),
           hintStyle: TextStyle(color: Colors.white54),
           filled: false,
@@ -138,5 +148,50 @@ class MainView extends ConsumerWidget {
       ],
       onChanged: (value) {},
     );
+  }
+
+  Widget _moviesListViewWidget() {
+    final List<Movie> _movies = [];
+
+    for (int i = 0; i < 20; i++) {
+      _movies.add(
+        Movie(
+          title: "Spider-Man: Brand New Day",
+          originalLanguage: "en".toUpperCase(),
+          adult: false,
+          overview: "Fighting crime full-time as Spider-Man in a world that doesn't remember him—and the pressure of seeing his old friends move on without him—sparks a change in Peter Parker he may not have the power to control. But that transformation might also be the only thing that can stop a shocking new threat to the city and those he loves - a powerful villain no one can even see.",
+          posterPath: "/bjiS5ipwxb9JFy3XRRN4OAilSeX.jpg",
+          backdropPath: "/eSvYccJm5ejJXFtJTqM2dIqrhK7.jpg",
+          releaseDate: "2026-07-29",
+          voteAverage: 8.2,
+        ),
+      );
+    }
+
+    if (_movies.isNotEmpty) {
+      return ListView.builder(
+        itemCount: _movies.length,
+        itemBuilder: (context, index) {
+          return Padding(
+            padding: EdgeInsets.symmetric(
+              vertical: _deviceHeight * 0.01,
+              horizontal: 0,
+            ),
+            child: GestureDetector(
+              onTap: () {},
+              child: MovieTile(
+                movie: _movies[index],
+                height: _deviceHeight * 0.2,
+                width: _deviceWidth * 0.85,
+              ),
+            ),
+          );
+        },
+      );
+    } else {
+      return Center(
+        child: CircularProgressIndicator(backgroundColor: Colors.white),
+      );
+    }
   }
 }
